@@ -4,64 +4,6 @@
 #include "tgaimage.h"
 #include "model.h"
 
-void triangle_by_line_sweeping(Vec2i t0, Vec2i t1, Vec2i t2, TGAImage &image, TGAColor color)
-{
-    if (t0.y > t1.y)
-    {
-        std::swap(t0, t1);
-    }
-    if (t0.y > t2.y)
-    {
-        std::swap(t0, t2);
-    }
-    if (t1.y > t2.y)
-    {
-        std::swap(t1, t2);
-    }
-
-    int total_height = t2.y - t0.y;
-    if (total_height == 0)
-        return;
-
-    int segment_height_lower = t1.y - t0.y;
-    if (segment_height_lower != 0)
-    {
-        Vec2i v1 = t1 - t0;
-        Vec2i v2 = t2 - t0;
-        for (int cur_y = t0.y, current_height = 0; cur_y <= t1.y; cur_y++, current_height++)
-        {
-            int xl = t0.x + int(std::round(float(current_height) / segment_height_lower * v1.x));
-            int xr = t0.x + int(std::round(float(current_height) / total_height * v2.x));
-            if (xl > xr)
-                std::swap(xl, xr);
-
-            for (int i = xl; i <= xr; i++)
-            {
-                image.set_color_at(i, cur_y, color);
-            }
-        }
-    }
-
-    int segment_height_upper = t2.y - t1.y;
-    if (segment_height_upper != 0)
-    {
-        Vec2i v1 = t2 - t1;
-        Vec2i v2 = t2 - t0;
-        for (int cur_y = t1.y, current_height = 0; cur_y <= t2.y; cur_y++, current_height++)
-        {
-            int xl = t1.x + int(std::round(float(current_height) / segment_height_upper * v1.x));
-            int xr = t0.x + int(std::round(float(current_height + segment_height_lower) / total_height * v2.x));
-            if (xl > xr)
-                std::swap(xl, xr);
-
-            for (int i = xl; i <= xr; i++)
-            {
-                image.set_color_at(i, cur_y, color);
-            }
-        }
-    }
-}
-
 inline Vec3f barycentric(Vec2i *tri, Vec2i p)
 {
     Vec3f u = Vec3f(tri[2].x - tri[0].x, tri[1].x - tri[0].x, tri[0].x - p.x) ^ Vec3f(tri[2].y - tri[0].y, tri[1].y - tri[0].y, tri[0].y - p.y);
