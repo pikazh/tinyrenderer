@@ -70,7 +70,7 @@ inline bool inside_test(Vec2i *tri, Vec2i p)
         return false;
 
     u = u / u.z;
-    if (u.x < 0 || u.y < 0 || (u.x + u.y) > 1)
+    if (u.x < 0.f || u.y < 0.f || (u.x + u.y) > 1.f)
         return false;
 
     return true;
@@ -90,8 +90,8 @@ void triangle_using_barycentric_coordinates(Vec2i t0, Vec2i t1, Vec2i t2, TGAIma
         bbox_min.x = std::max(0, std::min(bbox_min.x, it->x));
         bbox_min.y = std::max(0, std::min(bbox_min.y, it->y));
 
-        bbox_max.x = std::min(image.width(), std::max(bbox_max.x, it->x));
-        bbox_max.y = std::min(image.height(), std::max(bbox_max.y, it->y));
+        bbox_max.x = std::min(image.width()-1, std::max(bbox_max.x, it->x));
+        bbox_max.y = std::min(image.height()-1, std::max(bbox_max.y, it->y));
     }
 
     for (int x = bbox_min.x; x <= bbox_max.x; ++x)
